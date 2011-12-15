@@ -4,7 +4,7 @@ function h_fig=figure_coh_polar(r,theta,...
                                 r_show_thresh,...
                                 r_color_thresh,...
                                 r_max_equals_one,...
-                                clr_fun_name,...
+                                clr_thing,...
                                 clr_subthresh)
 
 % this function can also be used to plot other vector quatities, 
@@ -134,7 +134,13 @@ end
 axis(r_max*[-1.5 +1.5 -1.2 +1.2]);
 
 % calculate the color for each ROI
-clr=feval(clr_fun_name,r,theta);
+% is clr_thing the name of a function or a matrix?
+if isa(clr_thing,'char') || isa(clr_thing,'function_handle')
+  clr=feval(clr_thing,r,theta);
+else
+  % better be an n_roi x 3 matrix of colors
+  clr=clr_thing;
+end
 clr(r<=r_color_thresh,:)=...
   repmat(clr_subthresh,[sum(r<=r_color_thresh) 1]);
 
