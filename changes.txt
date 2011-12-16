@@ -173,3 +173,9 @@ Added a number of functions for reading and writing .tcs files, a file
   Spike2.
 
 
+
+1.10 -> 1.11 (December 16, 2011)
+
+Minor changes to several of the spectral plotting functions.
+
+
