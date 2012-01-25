@@ -15,6 +15,8 @@ if nargin<2 || isempty(basename)
 end
 fprintf(1,'%s:\n',basename);
 %print(fig_h,'-depsc2','-loose','-adobecset',sprintf('%s.eps',basename));
+old_vals=set_figure_to_wysiwyg_printing(fig_h);
 print(fig_h,'-depsc2','-loose',sprintf('%s.eps',basename));
+unset_figure_from_wysiwyg_printing(fig_h,old_vals);
 t=toc;
 fprintf(1,'Elapsed time: %0.1f sec\n',t);

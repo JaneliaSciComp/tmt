@@ -16,7 +16,9 @@ end
 fprintf(1,'Writing PDF file %s:\n',basename);
 temp_file_path=[tempname '.eps'];
 %print(fig_h,'-depsc2','-loose','-adobecset',temp_file_path);
+old_vals=set_figure_to_wysiwyg_printing(fig_h);
 print(fig_h,'-depsc2','-loose',temp_file_path);
+unset_figure_from_wysiwyg_printing(fig_h,old_vals);
 if ispc
   if strcmp(computer('arch'),'win64')
     command_name='gswin64c';

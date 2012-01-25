@@ -19,9 +19,15 @@ end
 fprintf(1,'Writing TIFF file %s:\n',basename);
 temp_file_path=[tempname '.eps'];
 %print(fig_h,'-depsc2','-loose','-adobecset',temp_file_path);
+old_vals=set_figure_to_wysiwyg_printing(fig_h);
 print(fig_h,'-depsc2','-loose',temp_file_path);
+unset_figure_from_wysiwyg_printing(fig_h,old_vals);
 if ispc
-  command_name='gswin32c';
+  if strcmp(computer('arch'),'win64')
+    command_name='gswin64c';
+  else
+    command_name='gswin32c';
+  end
 else
   command_name='gs';
 end
