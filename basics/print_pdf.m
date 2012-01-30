@@ -13,7 +13,7 @@ if nargin<2 || isempty(basename)
     basename=get(fig_h,'name');
   end
 end
-fprintf(1,'Writing PDF file %s:\n',basename);
+fprintf(1,'Writing PDF file %s.pdf:\n',basename);
 temp_file_path=[tempname '.eps'];
 %print(fig_h,'-depsc2','-loose','-adobecset',temp_file_path);
 old_vals=set_figure_to_wysiwyg_printing(fig_h);

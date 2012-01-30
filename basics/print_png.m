@@ -16,7 +16,7 @@ end
 if nargin<3 || isempty(res)
   res=300;
 end
-fprintf(1,'Writing PNG file %s:\n',basename);
+fprintf(1,'Writing PNG file %s.png:\n',basename);
 temp_file_path=[tempname '.eps'];
 % print(fig_h,'-depsc2','-loose','-adobecset',temp_file_path);
 old_vals=set_figure_to_wysiwyg_printing(fig_h);
