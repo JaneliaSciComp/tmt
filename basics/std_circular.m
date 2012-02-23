@@ -20,16 +20,17 @@ x=cos(theta);
 y=sin(theta);
 X_bar=mean(x,i_dim);
 Y_bar=mean(y,i_dim);
-mu_hat=atan2(Y_bar,X_bar);  % estimate of circular mean
-repmat_arg=ones(1,ndims(x));
-repmat_arg(i_dim)=n;
-mu_hat_repped=repmat(mu_hat,repmat_arg);
+%mu_hat=atan2(Y_bar,X_bar);  % estimate of circular mean
+r=hypot(X_bar,Y_bar);  % the "resultant"
 if flag==0
-  denom=n-1;
-elseif flag==1
-  denom=n;
+  prefactor=n/(n-1);  % unbiased estimate
+elseif flag==1 
+  prefactor=1;  % max likelihood estimate
 else
   error('flag argument must be 0, 1, or []');
 end
-sigma2_hat=2*sum(1-cos(theta-mu_hat_repped),i_dim)/denom;
+sigma2_hat=prefactor*2*(1-r);
+% The above can be shown to be equal to
+%   sigma2_hat=prefactor*2*sum(1-cos(theta-mu_hat_repped),i_dim)/n;
+% I did this on 2012/02/23
 sigma_hat=sqrt(sigma2_hat);
