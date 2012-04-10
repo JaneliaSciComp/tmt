@@ -18,13 +18,13 @@ end
 [headerpart1,count] = fread(fileid,6,'uint8');
 if (count ~= 6)
   fclose(fileid);
-  error('Problem reading %s\n',filename);
+  error('TMT:load_ipl_file:header_error','Problem reading %s\n',filename);
 end  
 
 [framedims,count] = fread(fileid,2,'uint32');
 if (count ~= 2)
   fclose(fileid);
-  error('Problem reading %s\n',filename);
+  error('TMT:load_ipl_file:header_error','Problem reading %s\n',filename);
 end  
 ncols=framedims(1);
 nrows=framedims(2);
@@ -32,19 +32,19 @@ nrows=framedims(2);
 [headerpart2,count] = fread(fileid,6,'uint8');
 if (count ~= 6)
   fclose(fileid);
-  error('Problem reading %s\n',filename);
+  error('TMT:load_ipl_file:header_error','Problem reading %s\n',filename);
 end  
 
 [nframes,count] = fread(fileid,1,'uint16');
 if (count ~= 1)
   fclose(fileid);
-  error('Problem reading %s\n',filename);
+  error('TMT:load_ipl_file:header_error','Problem reading %s\n',filename);
 end  
 
 [headerpart3,count] = fread(fileid,2098,'uint8');
 if (count ~= 2098)
   fclose(fileid);
-  error('Problem reading %s\n',filename);
+  error('TMT:load_ipl_file:header_error','Problem reading %s\n',filename);
 end  
 
 ppf=ncols*nrows;
@@ -56,7 +56,8 @@ for i=1:nframes
   [transposed_frame,count]=fread(fileid,[ncols nrows],'int16');
   if (count ~= ppf)
     fclose(fileid);
-    error('Problem reading frame %d of %s\n',i,filename);
+    error('TMT:load_ipl_file:frame_error', ...
+          'Problem reading frame %d of %s\n',i,filename);
   end
   data(:,:,i)=transposed_frame';
 end
