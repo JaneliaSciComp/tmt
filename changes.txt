@@ -185,3 +185,10 @@ Minor changes to several of the spectral plotting functions.
 Added functions for doing motion-correction of video.
 Added functions for doing 'anonymous' saving and loading of .mat files.
 
+
+
+1.12 -> 1.13 (April 24, 2012)
+
+Minor improvements.
+
+
