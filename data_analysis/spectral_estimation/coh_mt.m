@@ -2,7 +2,7 @@ function [f,...
           Cyx_mag, Cyx_phase, ...
           N_fft, f_res_diam, K, ...
           Cyx_mag_ci, Cyx_phase_ci, ...
-          Cyx_mag_xf, Cyx_mag_xf_sigma, ...
+          Cyx_mag_xf, Cyx_mag_xf_sigma, Cyx_mag_xf_ci,...
           Cyx_phase_sigma]=...
   coh_mt(dt,y,x,...
          nw,K,W_keep,...
@@ -173,7 +173,7 @@ if conf_level>0
   Cyxs_tao_mag=abs(Cyxs_tao);
   Cyxs_tao_mag=max(min(Cyxs_tao_mag,1),0);
   Cyxs_tao_mag_xf=atanh(Cyxs_tao_mag);
-  Cyxs_tao_phase=angle(Cyxs_tao);
+  %Cyxs_tao_phase=angle(Cyxs_tao);
 
   % calculate the coherence magnitude sigma
   Cyxs_tao_mag_xf_mean=mean(mean(Cyxs_tao_mag_xf,3),2);
@@ -192,8 +192,9 @@ if conf_level>0
 
   % calculate the confidence intervals
   ci_factor=tinv((1+conf_level)/2,R*K-1);
-  Cyx_mag_ci(:,1)=tanh(Cyx_mag_xf-ci_factor*Cyx_mag_xf_sigma);
-  Cyx_mag_ci(:,2)=tanh(Cyx_mag_xf+ci_factor*Cyx_mag_xf_sigma);
+  Cyx_mag_xf_ci(:,1)=Cyx_mag_xf-ci_factor*Cyx_mag_xf_sigma;
+  Cyx_mag_xf_ci(:,2)=Cyx_mag_xf+ci_factor*Cyx_mag_xf_sigma;
+  Cyx_mag_ci=tanh(Cyx_mag_xf_ci);
   Cyx_phase_ci(:,1)=Cyx_phase-ci_factor*Cyx_phase_sigma;
   Cyx_phase_ci(:,2)=Cyx_phase+ci_factor*Cyx_phase_sigma;
 else
