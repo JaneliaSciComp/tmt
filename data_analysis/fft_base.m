@@ -9,6 +9,6 @@ x_pos=linspace(0,hi_x_sample_index-1,hi_x_sample_index)';
 x_neg=linspace(-(N-hi_x_sample_index),...
                -1,...
                N-hi_x_sample_index)';
-x=[x_pos ; x_neg];
+x=(1/N)*[x_pos ; x_neg];
 
 end
