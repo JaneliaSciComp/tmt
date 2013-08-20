@@ -23,4 +23,5 @@ motr text eol=lf
 *.mj2 binary
 *.avi binary
 *.mat binary
+*.tif binary
 
