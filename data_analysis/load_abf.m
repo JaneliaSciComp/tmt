@@ -21,7 +21,7 @@ if nargin<2 || isempty(zero_t)
 end
 
 % open the file
-fid = fopen(file_name,'r','ieee-le');  % Open the file.
+fid = fopen(file_name,'r','ieee-le','windows-1252');  % Open the file.
 if fid==-1  % If fopen returns a -1, we did not open the file successfully.
   error(sprintf('File %s has not been found or permission denied',file_name));
   return;
