@@ -8,7 +8,11 @@ if nargin<1 || isempty(fig_h)
 end
 if nargin<2 || isempty(basename)
   if isempty(get(fig_h,'name'))
-    basename=sprintf('fig-%03d',fig_h);
+    if isnumeric(fig_h)
+      basename=sprintf('fig-%03d',fig_h);
+    else
+      basename=sprintf('fig-%03d',fig_h.Number);
+    end
   else
     basename=get(fig_h,'name');
   end

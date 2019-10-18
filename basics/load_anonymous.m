@@ -8,12 +8,12 @@ function x=load_anonymous(file_name)
 s=load('-mat',file_name);
 fn=fieldnames(s);
 if length(fn)==0  %#ok
-    error('TMT.load_anonymous.too_few_variables', ...
+    error('load_anonymous:too_few_variables', ...
           'No data in file %s.',file_name);
 elseif length(fn)==1
     x=getfield(s,fn{1});  %#ok
 else
-    error('TMT.load_anonymous.too_many_variables', ...
+    error('load_anonymous:too_many_variables', ...
           'More than one variable in file %s.',file_name);
 end 
 
