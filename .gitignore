@@ -4,3 +4,11 @@
 .DS_Store
 hds-last-last.mat
 hds-last.mat
+*.mat
+*.tif
+temp
+*.m~
+parfor_progress.txt
+*.stdout
+*.stderr
+*.stdouterr

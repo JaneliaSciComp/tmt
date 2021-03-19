@@ -28,7 +28,10 @@ Installation
 Copyright
 ---------
 
-All files included in TMT are copyright Adam L. Taylor, 2007-2015.
+All files included in TMT present in version 1.09 are copyright Adam
+L. Taylor, 1997-2011.  All files after this point, and additions to
+existing files, are copyright Howard Hughes Medical Institute,
+2011-infinity.
 
 
 License
