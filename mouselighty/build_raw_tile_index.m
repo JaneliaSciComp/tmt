@@ -31,7 +31,27 @@ function result = build_raw_tile_index(raw_tiles_path)
         tile_index_from_ijk1(ijk1(1), ijk1(2), ijk1(3)) = tile_index ;
     end
     
+    % Read in a single tile to get the tile shape
+    working_channel_index = 0 ;
+    middle_tile_index = round(tile_count/2) ;
+    relative_path = relative_path_from_tile_index{middle_tile_index} ;
+    imagery_file_relative_path = imagery_file_relative_path_from_relative_path(relative_path, working_channel_index) ;
+    imagery_file_path = fullfile(raw_tiles_path, imagery_file_relative_path) ;
+    raw_tile_stack_yxz_flipped = read_16bit_grayscale_tif(imagery_file_path) ;
+    tile_shape_jik = size(raw_tile_stack_yxz_flipped) ;
+    tile_shape_ijk = tile_shape_jik([2 1 3]) ;
+    
+    % Read in a single .acquisiton file to get the voxel spacing
+    [~,file_base_name] = fileparts2(relative_path) ;
+    acquisition_file_name = [file_base_name '-ngc.acquisition'] ;
+    acquisition_file_path = fullfile(raw_tiles_path, relative_path, acquisition_file_name) ;
+    tile_fov_shape_um_xyz = read_fov_shape_from_acquisition_file(acquisition_file_path) ;  % um
+    spacing_um_xyz = tile_fov_shape_um_xyz ./ (tile_shape_ijk-1) ;  % um, this is the convention the FOV field uses
+    
+    % Package things for return
     result = struct() ;
+    result.tile_shape_ijk = tile_shape_ijk ;
+    result.spacing_um_xyz = spacing_um_xyz ;  % um
     result.ijk1_from_tile_index = ijk1_from_tile_index ;
     result.xyz_from_tile_index = xyz_from_tile_index ;
     result.relative_path_from_tile_index = relative_path_from_tile_index ;
