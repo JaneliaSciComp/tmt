@@ -31,7 +31,7 @@ function result = get_single_bsub_job_status(job_id)
         elseif isequal(lsf_status, 'EXIT') ,
             % This seems to indicate an exit with something other than a 0 return code
             result = -1 ;
-        elseif isequal(lsf_status, 'PEND') || isequal(lsf_status, 'RUN') ,
+        elseif isequal(lsf_status, 'PEND') || isequal(lsf_status, 'RUN')  || isequal(lsf_status, 'UNKWN'),
             result = 0 ;
         else
             error('Unknown bjobs status string: %s', lsf_status) ;
