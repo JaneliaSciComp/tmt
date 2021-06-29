@@ -13,10 +13,10 @@ s=[0 ; cumsum(ds)];
 
 % normalize in a special way, to leave certain points where we want
 % them
-s1=interp1(x,s,0.25,'linear*');
-s2=interp1(x,s,0.50,'linear*');
-s3=interp1(x,s,0.75,'linear*');
-s4=interp1(x,s,1.00,'linear*');
+s1=interp1(x,s,0.25,'linear');
+s2=interp1(x,s,0.50,'linear');
+s3=interp1(x,s,0.75,'linear');
+s4=interp1(x,s,1.00,'linear');
 span1= x<0.25;
 span2= x>=0.25 & x<0.50;
 span3= x>=0.50 & x<0.75;
