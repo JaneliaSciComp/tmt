@@ -2,15 +2,20 @@ function result = collect_z_face_matches(match_folder_path, ...
                                          relative_path_from_tile_index, ...
                                          background_channel_index, ...
                                          has_z_plus_1_tile_from_tile_index, ...
-                                         tile_shape_ijk)
+                                         tile_shape_ijk, ...
+                                         does_use_new_style_file_names)
     tile_count = length(relative_path_from_tile_index) ;
     self_ijk0_from_match_index_from_tile_index = cell(tile_count, 1) ;
     neighbor_ijk0_from_match_index_from_tile_index = cell(tile_count, 1) ;
+    if does_use_new_style_file_names ,
+        match_file_name = sprintf('channel-%d-match-Z.mat', background_channel_index) ;
+    else
+        match_file_name = 'match-Z.mat' ;
+    end
     for tile_index = 1 : tile_count ,
         has_z_plus_1_tile = has_z_plus_1_tile_from_tile_index(tile_index) ;
         if has_z_plus_1_tile ,
             tile_relative_path = relative_path_from_tile_index{tile_index} ;
-            match_file_name = 'match-Z.mat' ;
             match_file_path = fullfile(match_folder_path, tile_relative_path, match_file_name) ;
             if exist(match_file_path, 'file') ,
                 data = load(match_file_path) ;
