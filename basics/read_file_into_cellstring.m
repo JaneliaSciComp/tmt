@@ -3,7 +3,7 @@ function result = read_file_into_cellstring(file_name)
     % Newlines are discarded.
     fid = fopen(file_name, 'rt') ;
     if fid<0 ,
-        error('Unable to open file %s for reading', file_name) ;
+        error('read_file_into_cell_string:unable_to_open_file', 'Unable to open file %s for reading', file_name) ;
     end
     cleaner = onCleanup(@()(fclose(fid))) ;
     result = cell(0,1) ;
