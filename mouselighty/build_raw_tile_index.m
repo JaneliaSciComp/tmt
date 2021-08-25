@@ -1,4 +1,4 @@
-function result = build_raw_tile_index(raw_tiles_path)
+function result = build_raw_tile_index(raw_tiles_path, manual_tile_shape_ijk)
     % Build an index of the raw tiles, given the path to the raw tiles    
     % On return, result is a scalar struct with three fields:
     %   .tileijk1_from_tile_index: a tile_count x 3 array giving the integral, one-based xyz position
@@ -13,6 +13,10 @@ function result = build_raw_tile_index(raw_tiles_path)
     %                                   ijk1_from_tile_index field.
     %   .tile_index_from_tile_ijk1: a 3D array that maps from integer, one-based xyz
     %                               position to the tile index.
+    
+    if ~exist('manual_tile_shape_ijk', 'var') || isempty(manual_tile_shape_ijk) ,
+        manual_tile_shape_ijk = [] ;
+    end
     
     initial_index_as_struct = struct() ;
     initial_index_as_struct.ijk1_from_tile_index = zeros(0,3) ;
@@ -44,11 +48,15 @@ function result = build_raw_tile_index(raw_tiles_path)
     working_channel_index = 0 ;
     middle_tile_index = round(tile_count/2) ;
     relative_path = relative_path_from_tile_index{middle_tile_index} ;
-    imagery_file_relative_path = imagery_file_relative_path_from_relative_path(relative_path, working_channel_index) ;
-    imagery_file_path = fullfile(raw_tiles_path, imagery_file_relative_path) ;
-    raw_tile_stack_yxz_flipped = read_16bit_grayscale_tif(imagery_file_path) ;
-    tile_shape_jik = size(raw_tile_stack_yxz_flipped) ;
-    tile_shape_ijk = tile_shape_jik([2 1 3]) ;
+    if ~isempty(manual_tile_shape_ijk) ,
+        tile_shape_ijk = manual_tile_shape_ijk ;
+    else        
+        imagery_file_relative_path = imagery_file_relative_path_from_relative_path(relative_path, working_channel_index) ;
+        imagery_file_path = fullfile(raw_tiles_path, imagery_file_relative_path) ;
+        raw_tile_stack_yxz_flipped = read_16bit_grayscale_tif(imagery_file_path) ;
+        tile_shape_jik = size(raw_tile_stack_yxz_flipped) ;
+        tile_shape_ijk = tile_shape_jik([2 1 3]) ;
+    end
     
     % Read in a single .acquisiton file to get the voxel spacing
     [~,file_base_name] = fileparts2(relative_path) ;
