@@ -47,9 +47,15 @@ function job_id = bsub(do_actually_submit, slot_count, stdouterr_file_name, opti
             error('There was a problem submitting the bsub command %s.  Unable to parse output to get job id.  Output was: %s', bsub_command, stdout) ;
         end
     else
-        % Just call the function normally
-        feval(function_handle, varargin{:}) ;
-        job_id = -1 ;  % represents a job that was run locally, and is therefore already done
+        % Just call the function locally, but use a try/catch to make it more robust.
+        try
+            feval(function_handle, varargin{:}) ;
+            job_id = -1 ;  % represents a job that was run locally and exited cleanly
+        catch me
+            fprintf('Encountered an error while running a local bsub job.  Here''s some information about the error:\n') ;
+            fprintf('%s\n', me.getReport()) ;
+            job_id = -2 ;  % represents a job that was run locally and errored
+        end
     end
 end
 

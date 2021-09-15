@@ -7,12 +7,15 @@ function result = get_bsub_job_status(job_ids)
     job_count = length(job_ids) ;
     result = nan(size(job_ids)) ;
     is_not_yet_submitted = isnan(job_ids) ;
-    is_not_going_to_be_submitted = (job_ids<0) ;  % means the job was run locally, and completed without error
-    result(is_not_going_to_be_submitted) = +1 ;
-    if all(is_not_yet_submitted | is_not_going_to_be_submitted) ,
+    was_run_locally = (job_ids<0) ;  % means the job was run locally
+    was_run_locally_and_exited_cleanly = (job_ids==-1) ;
+    was_run_locally_and_errored = (job_ids==-2) ;
+    result(was_run_locally_and_exited_cleanly) = +1 ;
+    result(was_run_locally_and_errored) = -1 ;
+    if all(is_not_yet_submitted | was_run_locally) ,
         return
     end
-    was_submitted = ~(is_not_going_to_be_submitted | is_not_yet_submitted) ;
+    was_submitted = ~(was_run_locally | is_not_yet_submitted) ;
     submitted_job_ids = job_ids(was_submitted) ;
     bjobs_lines = get_bjobs_lines(submitted_job_ids) ;
     bjobs_line_index = 1 ;
