@@ -1,4 +1,4 @@
-function job_id = bsub(do_actually_submit, slot_count, stdouterr_file_name, options, function_handle, varargin)
+function job_id = bsub(do_actually_submit, slot_count, stdouterr_file_name, options, do_use_xvfb, function_handle, varargin)
     % Wrapper for LSF bsub command.  Returns job id as a double.
     % Throws error if anything goes wrong.
     if isempty(slot_count) ,
@@ -7,11 +7,20 @@ function job_id = bsub(do_actually_submit, slot_count, stdouterr_file_name, opti
     if isempty(stdouterr_file_name) ,
         stdouterr_file_name = '/dev/null' ;
     end    
+    if isempty(do_use_xvfb) ,
+        do_use_xvfb = false ;
+    end
     if do_actually_submit ,
         function_name = func2str(function_handle) ;
         arg_string = generate_arg_string(varargin{:}) ;
         matlab_command = sprintf('modpath; %s(%s);', function_name, arg_string) ;
-        bash_command = sprintf('matlab -batch "%s"', matlab_command) ;
+        if do_use_xvfb ,
+            bash_command = sprintf('xvfb-run -d matlab -batch "%s"', matlab_command) ;
+                % Matlab 2019a-2021a all seem to leak memory when you call getframe() without an
+                % X11 server attached.  This is useful as a workaround for that bug.
+        else
+            bash_command = sprintf('matlab -batch "%s"', matlab_command) ;
+        end            
         bsub_command = ...
             sprintf('bsub -n %d -eo %s -oo %s %s %s', slot_count, stdouterr_file_name, stdouterr_file_name, options, bash_command) ;
         %fprintf('%s\n', bsub_command) ;

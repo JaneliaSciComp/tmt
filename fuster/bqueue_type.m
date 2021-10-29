@@ -11,12 +11,17 @@ classdef bqueue_type < handle
         has_job_been_submitted = false(1,0)
         %in_use_slot_count = 0 ;
         stdouterr_file_name_from_job_index = cell(1,0) ;
+        do_use_xvfb = false ;
     end
     
     methods
-        function self = bqueue_type(do_actually_submit, maximum_running_slot_count)
+        function self = bqueue_type(do_actually_submit, maximum_running_slot_count, do_use_xvfb)
+            if ~exist('do_use_xvfb', 'var') || isempty(do_use_xvfb) ,
+                do_use_xvfb = false ;
+            end
             self.do_actually_submit = do_actually_submit ;
             self.maximum_running_slot_count = maximum_running_slot_count ;
+            self.do_use_xvfb = do_use_xvfb ;
         end
         
         function result = queue_length(self)
@@ -79,6 +84,7 @@ classdef bqueue_type < handle
                                  this_slot_count, ...
                                  this_stdouterr_file_name, ...
                                  this_bsub_option_string, ...
+                                 self.do_use_xvfb, ...
                                  this_function_handle, ...
                                  this_other_arguments{:}) ;
                         self.job_ids(job_index) = this_job_id ;
