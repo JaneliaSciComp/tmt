@@ -108,6 +108,7 @@ classdef bqueue_type < handle
             if do_show_progress_bar ,
                 progress_bar.finish_up() ;
             end
+            job_statuses = get_bsub_job_status(self.job_ids) ;
         end
     end
 end

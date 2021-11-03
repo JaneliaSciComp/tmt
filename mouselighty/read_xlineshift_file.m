@@ -1,7 +1,7 @@
 function result = read_xlineshift_file(file_name) 
     fid = fopen(file_name, 'rt') ;
     if fid<0 ,
-        error('Unable to open file %s', file_name) ;
+        error('read_xlineshift_file:unable_to_open', 'Unable to open file %s', file_name) ;
     end
     cleaner = onCleanup(@()(fclose(fid))) ;
     result = fscanf(fid, '%d', 1) ;    

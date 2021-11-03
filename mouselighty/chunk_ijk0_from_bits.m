@@ -11,6 +11,6 @@ function chunk_ijk0 = chunk_ijk0_from_bits(bits)
     % zoom_level 1 means there's 8^1 leaves, zoom level n means theres 8^n
     % leaves.
     zoom_level = size(bits, 1) ;
-    magnifier = 2 .^ ((zoom_level-1):-1:0)' ;  % col vector
+    magnifier = 2 .^ ((zoom_level-1):-1:0)'   % col vector
     chunk_ijk0 = sum(magnifier .* bits, 1) ;
 end

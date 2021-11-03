@@ -14,14 +14,13 @@ function chunk_ijk1s = chunk_ijk1s_from_octree_paths(octree_paths)
     % chunk in xyz order, using one-based indexing.  Thus each element of
     % chunk_ijk1s should be an integer on [1, 2^zoom_level].
     %
-    % On output, each row has zoom_level elements, and gives the octree
-    % path to the chunk, as a sequence of morton-coded octants.
+    % On output, each row has three elements, giving the ijk1 coord of the chunk.
     
     [row_count, ~] = size(octree_paths) ;
     chunk_ijk0s = zeros(row_count, 3) ;
     for idx =  1:row_count ,
         octree_path = octree_paths(idx,:) ;
-        bits = bits_from_octree_path(octree_path) ;        
+        bits = bits_from_octree_path(octree_path)         
         chunk_ijk0s(idx,:) = chunk_ijk0_from_bits(bits) ;
     end
     chunk_ijk1s = chunk_ijk0s + 1 ;
