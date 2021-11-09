@@ -11,7 +11,8 @@ function result = get_bjobs_lines(job_ids)
         command_line = ['bjobs ' job_ids_as_string] ;
         [status, stdout] = system(command_line) ;
         if status ~= 0 ,
-            error('There was a problem running the command %s.  The return code was %d', command_line, status) ;
+            error('There was a problem running the command "%s".  Return code: %d.  Stdout/stderr:\n%s', command_line, status, stdout) ;
+            
         end
         lines = strsplit(stdout, '\n')' ;  % Want a col vector of lines
         if length(lines)<1 ,
