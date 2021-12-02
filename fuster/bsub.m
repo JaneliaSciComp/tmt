@@ -121,7 +121,7 @@ end
 
 function result = generate_arg_string(varargin) 
     arg_count = length(varargin) ;
-    result = char(1,0) ;  % fall-through in case of zero args
+    result = '' ;  % fall-through in case of zero args
     for i = 1 : arg_count ,
         this_arg = varargin{i} ;
         this_arg_as_string = tostring(this_arg) ;

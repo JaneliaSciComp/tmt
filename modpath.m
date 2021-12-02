@@ -5,6 +5,7 @@ function modpath()
     addpath(degit(genpath(fullfile(this_folder_path,'data_analysis'))));
     addpath(fullfile(this_folder_path,'lapwing'));
     addpath(fullfile(this_folder_path,'fuster'));
+    addpath(fullfile(this_folder_path,'dagger'));
     addpath(fullfile(this_folder_path,'mouselighty'));
     addpath(this_folder_path) ;
 end

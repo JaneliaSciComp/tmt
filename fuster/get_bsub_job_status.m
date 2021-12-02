@@ -1,22 +1,23 @@
 function result = get_bsub_job_status(job_ids)
-    % Possible results are {-1,0,+1}.
+    % Possible results are {-1,0,+1,nan}.
     %   -1 means errored out
     %    0 mean running or pending
     %   +1 means completed successfully
+    %  nan means the corresponding job_id was nan
     
     job_count = length(job_ids) ;
     result = nan(size(job_ids)) ;
-    is_not_yet_submitted = isnan(job_ids) ;
-    result(is_not_yet_submitted) = 0 ;
+    has_not_been_submitted = isnan(job_ids) ;
+    result(has_not_been_submitted) = 0 ;
     was_run_locally = (job_ids<0) ;  % means the job was run locally
     was_run_locally_and_exited_cleanly = (job_ids==-1) ;
     was_run_locally_and_errored = (job_ids==-2) ;
     result(was_run_locally_and_exited_cleanly) = +1 ;
     result(was_run_locally_and_errored) = -1 ;
-    if all(is_not_yet_submitted | was_run_locally) ,
+    if all(has_not_been_submitted | was_run_locally) ,
         return
     end
-    was_submitted = ~(was_run_locally | is_not_yet_submitted) ;
+    was_submitted = ~(was_run_locally | has_not_been_submitted) ;
     submitted_job_ids = job_ids(was_submitted) ;
     bjobs_lines = get_bjobs_lines(submitted_job_ids) ;
     bjobs_line_index = 1 ;
