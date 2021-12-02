@@ -12,3 +12,5 @@ parfor_progress.txt
 *.stdout
 *.stderr
 *.stdouterr
+*.stdouterr.txt
+
