@@ -3,6 +3,7 @@ function modpath()
     this_folder_path = fileparts(this_script_file_path) ;
     addpath(degit(genpath(fullfile(this_folder_path,'basics'))));
     addpath(degit(genpath(fullfile(this_folder_path,'data_analysis'))));
+    addpath(fullfile(this_folder_path,'filesystemy'));
     addpath(fullfile(this_folder_path,'lapwing'));
     addpath(fullfile(this_folder_path,'fuster'));
     addpath(fullfile(this_folder_path,'dagger'));
