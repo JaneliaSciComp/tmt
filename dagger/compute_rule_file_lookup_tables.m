@@ -6,11 +6,13 @@ function [name_from_overall_file_index, ...
           is_downstream_from_overall_file_index_from_rule_index, ...
           is_a_pure_input_from_overall_file_index] = ...
         compute_rule_file_lookup_tables(rule_from_rule_index)
+    % From the rules, computes a bunch of structures that will be useful 
+    % when we actually want to execute the DAG defined by the rules.    
     
     % First compile a list of all the unique files in all the rules
-    name_from_overall_input_file_index = unique([rule_from_rule_index.name_from_input_file_index]) 
-    name_from_overall_output_file_index = unique([rule_from_rule_index.name_from_output_file_index]) 
-    name_from_overall_file_index = unique(horzcat(name_from_overall_input_file_index, name_from_overall_output_file_index)) 
+    name_from_overall_input_file_index = unique([rule_from_rule_index.name_from_input_file_index]) ;
+    name_from_overall_output_file_index = unique([rule_from_rule_index.name_from_output_file_index]) ;
+    name_from_overall_file_index = unique(horzcat(name_from_overall_input_file_index, name_from_overall_output_file_index)) ;
     
     % Make a closure that closes over name_from_overall_file_index
     function result = process_rule_wrapper(rule)

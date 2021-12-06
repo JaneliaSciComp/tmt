@@ -122,12 +122,6 @@ function [state_from_rule_index, state_from_overall_file_index] = ...
             % means rule is unsettled (0) and means inputs are good (+1)
             % means rule is ready-to-run
         
-        % Do we still need this part?    
-%         % Update which rules still need to be submitted    
-%         does_need_submission_from_rule_index = ~is_rule_settled_from_rule_index & ~is_running_from_rule_index ;
-%         rule_index_from_needs_submission_index = find(does_need_submission_from_rule_index) ;
-%         is_runnable_from_needs_submission_index = is_runnable_from_rule_index(rule_index_from_needs_submission_index) ;       
-        
         % Compute how many slots are in use, and thus how many slots we can use for new
         % job submissions
         carryover_slot_count = sum(slot_count_from_rule_index(is_running_from_rule_index)) ;
@@ -179,5 +173,4 @@ function [state_from_rule_index, state_from_overall_file_index] = ...
     if do_show_progress_bar ,
         progress_bar.finish_up() ;
     end
-    job_status_from_rule_index = get_bsub_job_status(job_id_from_rule_index) ;
 end
