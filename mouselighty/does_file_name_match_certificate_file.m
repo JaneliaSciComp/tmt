@@ -1,6 +1,0 @@
-function result = does_file_name_match_certificate_file(file_path)
-    [~, file_name] = fileparts2(file_path) ;
-    result = does_match_regexp(file_name, '\.checkpoint-\d$') || ...
-             does_match_regexp(file_name, '\.tif\.line-fix-checked$') || ...
-             does_match_regexp(file_name, '\.mj2\.is-similar-to-tif$') ;
-end
