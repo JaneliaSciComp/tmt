@@ -2,7 +2,7 @@ function result = dirwalk(root_folder_name, callback, initial_state, varargin)
     % Like Python's os.walk()
     %
     % callback should be a function that can be called like so:
-    % update_state = callback(root_folder_absolute_path, current_folder_relative_path, folder_names, file_names, state, varargin)
+    % updated_state = callback(root_folder_absolute_path, current_folder_relative_path, folder_names, file_names, state, varargin)
     % where root_folder_absolute_path is the absolute path to root_folder_name,     
     % current_folder_relative_path is a folder under root_folder_name, and
     % folder_names are the folders within it, and file_names are the files within
