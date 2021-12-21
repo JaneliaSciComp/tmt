@@ -15,7 +15,7 @@ function job_id = bsub(do_actually_submit, slot_count, stdouterr_file_name, opti
         arg_string = generate_arg_string(varargin{:}) ;
         matlab_command = sprintf('modpath; %s(%s);', function_name, arg_string) ;
         if do_use_xvfb ,
-            bash_command = sprintf('/usr/bin/xvfb-run -d matlab -batch "%s"', matlab_command) ;
+            bash_command = sprintf('/usr/bin/xvfb-run -d /misc/local/matlab-2019a/bin/matlab -batch "%s"', matlab_command) ;
                 % Matlab 2019a-2021a all seem to leak memory when you call getframe() without an
                 % X11 server attached.  This is useful as a workaround for that bug.
         else
