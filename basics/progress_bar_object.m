@@ -1,23 +1,41 @@
 classdef progress_bar_object < handle
     properties
         n_
+        i_
         percent_as_displayed_last_
         did_print_at_least_one_line_
         did_print_final_newline_
-        tic_id_
+        data_queue_
     end
     
     methods
         function self = progress_bar_object(n)
             self.n_ = n ;
+            self.i_ = 0 ;
             self.percent_as_displayed_last_ = [] ;
             self.did_print_at_least_one_line_ = false ;
             self.did_print_final_newline_ = false ;
-            self.tic_id_ = tic() ;
+            self.data_queue_ = parallel.pool.DataQueue ;
+            self.data_queue_.afterEach(@(x)(self.update_helper_())) ;
         end
         
-        function update(self, i)
-            n =self.n_ ;
+        function delete(self)
+            if ~isempty(self.data_queue_) && isvalid(self.data_queue_) ,
+                delete(self.data_queue_) ;
+                self.data_queue_ = [] ;
+            end
+        end
+        
+        function update(self)
+            % Should be called from within the parfor loop
+            self.data_queue_.send(1) ;
+        end
+        
+        function update_helper_(self)
+            % Should not be called by clients
+            self.i_ = self.i_ + 1 ;
+            i = self.i_ ;
+            n = self.n_ ;
             percent = fif(n==0, 100, 100*(i/n)) ;
             percent_as_displayed = round(percent*10)/10 ;    
             if ~isequal(percent_as_displayed, self.percent_as_displayed_last_) ,
@@ -30,18 +48,13 @@ classdef progress_bar_object < handle
                 self.did_print_at_least_one_line_ = true ;
             end
             if i>=n ,
-                fprintf('\n') ;
-                self.did_print_final_newline_ = true ;
+                if ~self.did_print_final_newline_ ,
+                    fprintf('\n') ;
+                    self.did_print_final_newline_ = true ;
+                end
             end
             self.percent_as_displayed_last_ = percent_as_displayed ;
         end
-        
-        function finish_up(self)
-            if ~self.did_print_final_newline_ ,
-                fprintf('\n') ;
-                self.did_print_final_newline_ = true ;
-            end                
-            toc(self.tic_id_) ;
-        end
     end
 end
+ 
