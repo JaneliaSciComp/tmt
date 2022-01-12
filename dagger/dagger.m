@@ -69,7 +69,9 @@ function [state_from_rule_index, state_from_overall_file_index] = ...
     is_progress_still_possible = true ;
     if do_show_progress_bar ,
         progress_bar = progress_bar_object(rule_count) ;
+        progress_bar.update(settled_rule_count) ;
     end
+    last_settled_rule_count = settled_rule_count ;
     ticId = tic() ;
     while settled_rule_count<rule_count && ~is_time_up && is_progress_still_possible ,        
         % Update what jobs are running now, and their job statuses
@@ -107,10 +109,11 @@ function [state_from_rule_index, state_from_overall_file_index] = ...
         % Update what rules are settled
         is_rule_settled_from_rule_index = (state_from_rule_index~=0) ;
         settled_rule_count = sum(is_rule_settled_from_rule_index) ;
+        newly_settled_rule_count = settled_rule_count - last_settled_rule_count ;
         
         % Update the progress bar
         if do_show_progress_bar ,
-            progress_bar.update(settled_rule_count) ;
+            progress_bar.update(newly_settled_rule_count) ;
         end
         
         % Update which rules are runnable
@@ -163,6 +166,9 @@ function [state_from_rule_index, state_from_overall_file_index] = ...
 
         % See if our time is up
         is_time_up = (toc(ticId) > maximum_wait_time) ;
+       
+        % Update this
+        last_settled_rule_count = settled_rule_count ;
         
         % If we're actually submitting to the cluster, pause here a bit so we
         % don't submit too too many bjobs commands
@@ -170,7 +176,7 @@ function [state_from_rule_index, state_from_overall_file_index] = ...
             pause(1) ;
         end        
     end
-    if do_show_progress_bar ,
-        progress_bar.finish_up() ;
-    end
+%     if do_show_progress_bar ,
+%         progress_bar.finish_up() ;
+%     end
 end

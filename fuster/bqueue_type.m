@@ -58,6 +58,7 @@ classdef bqueue_type < handle
             if do_show_progress_bar ,
                 progress_bar = progress_bar_object(job_count) ;
             end
+            last_exited_job_count = 0 ;
             ticId = tic() ;
             while ~have_all_exited && ~is_time_up ,
                 old_job_ids = self.job_ids ;                
@@ -94,19 +95,18 @@ classdef bqueue_type < handle
                 end                                
                 has_job_exited = self.has_job_been_submitted & ~is_job_in_progress ;
                 exited_job_count = sum(has_job_exited) ;
+                newly_exited_job_count = exited_job_count - last_exited_job_count ;
                 if do_show_progress_bar ,
-                    progress_bar.update(exited_job_count) ;
+                    progress_bar.update(newly_exited_job_count) ;
                 end
-                have_all_exited = (exited_job_count==job_count) ;        
+                have_all_exited = (exited_job_count==job_count) ;
                 if ~have_all_exited ,  
                     if self.do_actually_submit ,
                         pause(1) ;
                     end
                     is_time_up = (toc(ticId) > maximum_wait_time) ;
                 end
-            end
-            if do_show_progress_bar ,
-                progress_bar.finish_up() ;
+                last_exited_job_count = exited_job_count ;
             end
             job_statuses = get_bsub_job_status(self.job_ids) ;
         end

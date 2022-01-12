@@ -16,7 +16,7 @@ classdef progress_bar_object < handle
             self.did_print_at_least_one_line_ = false ;
             self.did_print_final_newline_ = false ;
             self.data_queue_ = parallel.pool.DataQueue ;
-            self.data_queue_.afterEach(@(x)(self.update_helper_())) ;
+            self.data_queue_.afterEach(@(di)(self.update_helper_(di))) ;
         end
         
         function delete(self)
@@ -26,14 +26,22 @@ classdef progress_bar_object < handle
             end
         end
         
-        function update(self)
+        function update(self, varargin)
             % Should be called from within the parfor loop
-            self.data_queue_.send(1) ;
+            if isempty(varargin) ,
+                di = 1 ;
+            else
+                di = varargin{1} ;
+            end
+            self.data_queue_.send(di) ;
         end
         
-        function update_helper_(self)
+        function update_helper_(self, di)
             % Should not be called by clients
-            self.i_ = self.i_ + 1 ;
+            if self.did_print_final_newline_ ,
+                return
+            end
+            self.i_ = min(self.i_ + di, self.n_) ;
             i = self.i_ ;
             n = self.n_ ;
             percent = fif(n==0, 100, 100*(i/n)) ;
@@ -47,7 +55,7 @@ classdef progress_bar_object < handle
                 fprintf('[%-50s]: %4.1f%%', bar, percent_as_displayed) ;
                 self.did_print_at_least_one_line_ = true ;
             end
-            if i>=n ,
+            if i==n ,
                 if ~self.did_print_final_newline_ ,
                     fprintf('\n') ;
                     self.did_print_final_newline_ = true ;
