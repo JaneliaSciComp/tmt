@@ -10,7 +10,7 @@ function [numeric_job_status_from_job_index, lsf_status_string_from_job_index] =
     % string.  LSF statuses are things like 'DONE', 'EXIT', 'RUN', 'PEND', etc. 
 
     if ~exist('submit_host_name', 'var') || isempty(submit_host_name) ,
-        submit_host_name = char(1,0) ;
+        submit_host_name = '' ;
     end    
     % We don't support repeated job ids, so check for that
     if length(unique(job_id_from_job_index)) ~= length(job_id_from_job_index) ,

@@ -11,7 +11,7 @@ function job_id = bsub(do_actually_submit, slot_count, stdouterr_file_name, opti
         do_use_xvfb = false ;
     end
     if isempty(submit_host_name) ,
-        submit_host_name = char(1,0) ;
+        submit_host_name = '' ;
     end
     if do_actually_submit ,
         function_name = func2str(function_handle) ;
@@ -132,7 +132,7 @@ end
 
 function result = generate_arg_string(varargin) 
     arg_count = length(varargin) ;
-    result = char(1,0) ;  % fall-through in case of zero args
+    result = '' ;  % fall-through in case of zero args
     for i = 1 : arg_count ,
         this_arg = varargin{i} ;
         this_arg_as_string = tostring(this_arg) ;

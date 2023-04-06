@@ -5,7 +5,7 @@ function result = get_bjobs_lines(job_ids, submit_host_name)
     % In its current incarnation, a better name might be get_LSF_statuses().
     
     if ~exist('submit_host_name', 'var') || isempty(submit_host_name) ,
-        submit_host_name = char(1,0) ;
+        submit_host_name = '' ;
     end    
     job_id_count = length(job_ids) ;
     job_id_count_per_call = 10000 ;

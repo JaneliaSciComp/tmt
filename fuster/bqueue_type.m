@@ -12,7 +12,7 @@ classdef bqueue_type < handle
         %in_use_slot_count = 0 ;
         stdouterr_file_name_from_job_index = cell(1,0) ;
         do_use_xvfb = false ;
-        submit_host_name = char(1,0) ;
+        submit_host_name = '' ;
     end
     
     methods
@@ -21,7 +21,7 @@ classdef bqueue_type < handle
                 do_use_xvfb = false ;
             end
             if ~exist('submit_host_name', 'var') || isempty(submit_host_name) ,                
-                submit_host_name = char(1,0) ;
+                submit_host_name = '' ;
             end
             self.do_actually_submit = do_actually_submit ;
             self.maximum_running_slot_count = maximum_running_slot_count ;

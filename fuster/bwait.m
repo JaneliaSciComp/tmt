@@ -6,7 +6,7 @@ function job_statuses = bwait(job_ids, maximum_wait_time, do_show_progress_bar, 
         do_show_progress_bar = true ;
     end
     if ~exist('submit_host_name', 'var') || isempty(submit_host_name) ,
-        submit_host_name = char(1,0) ;
+        submit_host_name = '' ;
     end    
     have_all_exited = false ;
     is_time_up = false ;
