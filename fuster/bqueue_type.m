@@ -12,16 +12,21 @@ classdef bqueue_type < handle
         %in_use_slot_count = 0 ;
         stdouterr_file_name_from_job_index = cell(1,0) ;
         do_use_xvfb = false ;
+        submit_host_name = char(1,0) ;
     end
     
     methods
-        function self = bqueue_type(do_actually_submit, maximum_running_slot_count, do_use_xvfb)
+        function self = bqueue_type(do_actually_submit, maximum_running_slot_count, do_use_xvfb, submit_host_name)
             if ~exist('do_use_xvfb', 'var') || isempty(do_use_xvfb) ,
                 do_use_xvfb = false ;
+            end
+            if ~exist('submit_host_name', 'var') || isempty(submit_host_name) ,                
+                submit_host_name = char(1,0) ;
             end
             self.do_actually_submit = do_actually_submit ;
             self.maximum_running_slot_count = maximum_running_slot_count ;
             self.do_use_xvfb = do_use_xvfb ;
+            self.submit_host_name = submit_host_name ;
         end
         
         function result = queue_length(self)
@@ -62,7 +67,7 @@ classdef bqueue_type < handle
             ticId = tic() ;
             while ~have_all_exited && ~is_time_up ,
                 old_job_ids = self.job_ids ;                
-                job_statuses = get_bsub_job_status(old_job_ids) ; 
+                job_statuses = get_bsub_job_status(old_job_ids, self.submit_host_name) ; 
                 is_job_in_progress = self.has_job_been_submitted & (job_statuses==0) ;
                 carryover_slot_count = sum(self.slot_count_from_job_index(is_job_in_progress)) ;
                 maximum_new_slot_count = self.maximum_running_slot_count - carryover_slot_count ;
@@ -86,6 +91,7 @@ classdef bqueue_type < handle
                                  this_stdouterr_file_name, ...
                                  this_bsub_option_string, ...
                                  self.do_use_xvfb, ...
+                                 self.submit_host_name, ...
                                  this_function_handle, ...
                                  this_other_arguments{:}) ;
                         self.job_ids(job_index) = this_job_id ;
@@ -108,7 +114,7 @@ classdef bqueue_type < handle
                 end
                 last_exited_job_count = exited_job_count ;
             end
-            job_statuses = get_bsub_job_status(self.job_ids) ;
+            job_statuses = get_bsub_job_status(self.job_ids, self.submit_host_name) ;
         end
     end
 end
