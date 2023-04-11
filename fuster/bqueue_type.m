@@ -1,6 +1,7 @@
 classdef bqueue_type < handle
     properties (SetAccess = private)
         do_actually_submit = true
+        do_try = true 
         bsub_option_string_from_job_index = cell(1,0) ;
         function_handle = cell(1,0)
         other_arguments = cell(1,0)
@@ -16,7 +17,16 @@ classdef bqueue_type < handle
     end
     
     methods
-        function self = bqueue_type(do_actually_submit, maximum_running_slot_count, do_use_xvfb, submit_host_name)
+        function self = bqueue_type(do_actually_submit, do_try, maximum_running_slot_count, do_use_xvfb, submit_host_name)
+            if ~exist('do_actually_submit', 'var') || isempty(do_actually_submit) ,
+                do_actually_submit = true ;
+            end
+            if ~exist('do_try', 'var') || isempty(do_try) ,
+                do_try = true ;
+            end
+            if ~exist('maximum_running_slot_count', 'var') || isempty(maximum_running_slot_count) ,
+                maximum_running_slot_count = 400 ;
+            end
             if ~exist('do_use_xvfb', 'var') || isempty(do_use_xvfb) ,
                 do_use_xvfb = false ;
             end
@@ -24,6 +34,7 @@ classdef bqueue_type < handle
                 submit_host_name = '' ;
             end
             self.do_actually_submit = do_actually_submit ;
+            self.do_try = do_try ;
             self.maximum_running_slot_count = maximum_running_slot_count ;
             self.do_use_xvfb = do_use_xvfb ;
             self.submit_host_name = submit_host_name ;
@@ -87,6 +98,7 @@ classdef bqueue_type < handle
                         this_bsub_option_string = self.bsub_option_string_from_job_index{job_index} ;
                         this_job_id = ...
                             bsub(self.do_actually_submit, ...
+                                 self.do_try, ...
                                  this_slot_count, ...
                                  this_stdouterr_file_name, ...
                                  this_bsub_option_string, ...

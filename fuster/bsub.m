@@ -1,4 +1,5 @@
 function job_id = bsub(do_actually_submit, ...
+                       do_try, ...
                        slot_count, ...
                        stdouterr_file_name, ...
                        options, ...
@@ -8,6 +9,12 @@ function job_id = bsub(do_actually_submit, ...
                        varargin)
     % Wrapper for LSF bsub command.  Returns job id as a double.
     % Throws error if anything goes wrong.
+    if isempty(do_actually_submit) ,
+        do_actually_submit = true ;        
+    end
+    if isempty(do_try) ,
+        do_try = true ;        
+    end
     if isempty(slot_count) ,
         slot_count = 1 ;
     end    
@@ -75,13 +82,19 @@ function job_id = bsub(do_actually_submit, ...
         end
     else
         % Just call the function locally, but use a try/catch to make it more robust.
-        try
+        if do_try ,
+            try
+                feval(function_handle, varargin{:}) ;
+                job_id = -1 ;  % represents a job that was run locally and exited cleanly
+            catch me
+                fprintf('Encountered an error while running a local bsub job.  Here''s some information about the error:\n') ;
+                fprintf('%s\n', me.getReport()) ;
+                job_id = -2 ;  % represents a job that was run locally and errored
+            end
+        else
+            % Run without the try/catch wrapper, usually for debugging
             feval(function_handle, varargin{:}) ;
             job_id = -1 ;  % represents a job that was run locally and exited cleanly
-        catch me
-            fprintf('Encountered an error while running a local bsub job.  Here''s some information about the error:\n') ;
-            fprintf('%s\n', me.getReport()) ;
-            job_id = -2 ;  % represents a job that was run locally and errored
         end
     end
 end
