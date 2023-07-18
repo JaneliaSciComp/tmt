@@ -25,8 +25,9 @@ function thang_diff_helper(test, ref, test_prefix, ref_prefix)
         abs_diff = abs(test-ref) ;
         max_abs_diff = max(abs_diff, [], 'all') ;
         min_abs_diff = min(abs_diff, [], 'all') ;
-        fprintf('%s and %s are both numeric, but are not the same.  max abs diff = %g, min abs diff = %g\n', ...
-                ref_prefix, test_prefix, max_abs_diff, min_abs_diff) ;
+        median_abs_diff = median(abs_diff, 'all') ;
+        fprintf('%s and %s are both numeric, and the same shape, but are not the same.  numel = %d, max abs diff = %g, median abs diff = %g, min abs diff = %g\n', ...
+                ref_prefix, test_prefix, numel(ref), max_abs_diff, median_abs_diff, min_abs_diff) ;
         return
     elseif isstruct(ref) ,
         if ~isstruct(test) ,
