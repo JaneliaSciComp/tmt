@@ -72,6 +72,9 @@ function [f,a,ih] = imglance(im, scale)
                 f = figure() ;
                 a = axes(f) ;
                 ih = image(a, im) ;
+                axis(a, 'equal') ;
+                axis(a, 'tight') ;
+                colormap(a, 'gray') ;                
             else
                 im = double(im) ;
                 lo = min(min(min(im))) ;
@@ -101,6 +104,8 @@ function [f,a,ih] = imglance(im, scale)
                 f = figure() ;
                 a = axes(f) ;
                 ih = image(a, im) ;
+                axis(a, 'equal') ;
+                axis(a, 'tight') ;
             end
         else
             error('imglance() doesn''t work on 3D arrays with %d pages.  Page count must be 1 or 3.', p) ;
