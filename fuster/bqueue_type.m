@@ -120,7 +120,7 @@ classdef bqueue_type < handle
                 have_all_exited = (exited_job_count==job_count) ;
                 if ~have_all_exited ,  
                     if self.do_actually_submit ,
-                        pause(1) ;
+                        pause(20) ;
                     end
                     is_time_up = (toc(ticId) > maximum_wait_time) ;
                 end

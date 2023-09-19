@@ -26,29 +26,7 @@ function result = get_bjobs_lines(job_ids, submit_host_name)
                         submit_host_name, ...
                         escaped_bjobs_command_line) ;
         end
-        [return_code, stdout] = system(command_line) ;
-%         fprintf('\n\nstdout:\n') ;
-%         fprintf(stdout) ;
-%         fprintf('\n\n') ;
-        % [status, stdout] = system(command_line) ;
-        % Ignore the return code.
-        % As of this writing (2022-09-29), bsub returns a non-zero error code if
-        % the given job IDs are a mix of known and unknown job IDs.  (But returns a
-        % zero return code if they are *all* unknown.)  This seems like a bug, but
-        % whatta ya gonna do?  So we just ignore the return code.  If something has
-        % gone very wrong, the parsing of the stdout should fail, and an error will
-        % be thrown.
-        % if status ~= 0 ,
-        %     error('There was a problem running the command %s.  The return code was %d', command_line, status) ;
-        % end
-        bjobs_lines = strtrim(strsplit(strtrim(stdout), '\n'))' ;  
-            % Want a col vector of lines, with no leading or training whitespace on
-            % each line.
-        if length(bjobs_lines) ~= length(job_ids_this_batch) ,
-            error('There was a problem submitting the bsub command %s.  Unable to parse output.  Output was: %s', command_line, stdout) ;
-        end
-        %job_ids_this_batch_count = length(job_ids_this_batch) ;
-        %bjobs_lines = lines(2:(job_ids_this_batch_count+1)) ;  % drop the header
+        bjobs_lines = try_bjobs_command_line_a_few_times(command_line, job_ids_this_batch) ;
         bjobs_lines_from_batch_index{batch_index} = bjobs_lines ;
     end
     if isrow(job_ids) && ~isscalar(job_ids) ,
@@ -56,5 +34,37 @@ function result = get_bjobs_lines(job_ids, submit_host_name)
         result = vertcat(bjobs_lines_from_batch_index{:})' ;  % row
     else
         result = vertcat(bjobs_lines_from_batch_index{:}) ;  % col
+    end
+end
+
+
+
+function bjobs_lines = try_bjobs_command_line_a_few_times(command_line, job_ids_this_batch)
+    maximum_attempt_count = 3 ;
+    delay_between_attempts = 10 ;  % s
+    did_succeed = false ;
+    for attempt_count = 1 : maximum_attempt_count ,
+        [~, stdout] = system(command_line) ;
+        % Ignore the return code.
+        % As of this writing (2023-09-15), bjobs will return a zero/nonzero error code
+        % depending only on whether the *last* job ID in the list is known/unknown.
+        % This seems like a bug, but whatta ya gonna do?  So we just ignore the return
+        % code.  If something has gone very wrong, the parsing of the stdout should
+        % fail, and an error will be thrown.
+        bjobs_lines = strtrim(strsplit(strtrim(stdout), '\n'))' ;
+            % Want a col vector of lines, with no leading or training whitespace on
+            % each line.
+        if length(bjobs_lines) == length(job_ids_this_batch) ,
+            did_succeed = true ;
+            break
+        end
+        warning('tmt:fuster:cant_parse_bjobs_output', ...
+                'On attempt %d of %d, there was a problem submitting the bjobs command %s.  Unable to parse output.  Output was: %s', ...
+                attempt_count, maximum_attempt_count, command_line, stdout) ;
+        pause(delay_between_attempts) ;
+    end
+    if ~did_succeed ,
+        error('tmt:fuster:unable_to_get_bjobs_information', ...
+              'All %d attempts to run this bjobs command failed: %s.', maximum_attempt_count) ;
     end
 end
