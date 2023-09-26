@@ -38,7 +38,7 @@ function [f,a,ih] = imglance(im, scale)
             if isempty(scale) ,
                 if 0<=lo && hi<=1 ,
                     clim(a, [0 1]) ;
-                    do_add_colorbar = false ;
+                    do_add_colorbar = true ;
                 else
                     clim(a, [lo hi]) ;
                     do_add_colorbar = true ;
@@ -48,7 +48,7 @@ function [f,a,ih] = imglance(im, scale)
                 do_add_colorbar = true ;
             elseif strcmp(scale, 'dont')
                 clim(a, [0 1]) ;
-                do_add_colorbar = false ;
+                do_add_colorbar = true ;
             else
                 error('Internal error: scale has an illegal value, ''%s''', scale) ;
             end
