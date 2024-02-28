@@ -18,3 +18,5 @@ figure;
 colormap(cmap);
 colorbar;
 
+% prettier
+f = figure_of_angular_colormap(cmap, 'hsv_smooth') ;

@@ -1,11 +1,11 @@
-function cmap=f(n_colors)
+function cmap = oppo3(n_colors)
 
 % generate a non-smooth colormap on a very fine grid
 % calculate the path length, and from that get the phase for each
 % point on the fine grid
 n_samples=4000;  % want divisible by 4
 x=linspace(0,1,n_samples+1)';
-clr=oppo2_of_x(x);
+clr=oppo3_of_x(x);
 clr_lab=srgb2lab(clr);
 ds=dist_lab(clr_lab(1:end-1,:),clr_lab(2:end,:));
 s=[0 ; cumsum(ds)];
@@ -31,5 +31,5 @@ phase(span4)=0.25/(s4-s3)*(s(span4)-s3)+0.75;
 phase_samples=linspace(0,1,n_colors+1)';
 phase_samples=phase_samples(1:end-1);
 x_samples=interp1(phase,x,phase_samples,'linear');
-cmap=oppo2_of_x(x_samples);
+cmap=oppo3_of_x(x_samples);
 
