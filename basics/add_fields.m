@@ -11,7 +11,6 @@ function result = add_fields(s, varargin)
         field_value_vararg_index = 2*(pair_index-1) + 2 ;
         field_name = varargin{field_name_vararg_index} ;
         field_value = varargin{field_value_vararg_index} ;
-        s.(field_name) = field_value ;
+        result.(field_name) = field_value ;
     end
 end
-    
