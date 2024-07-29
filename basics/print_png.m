@@ -21,12 +21,12 @@ if nargin<3 || isempty(res)
   res=200;
 end
 fprintf(1,'Writing PNG file %s.png:\n',basename);
-temp_file_path=[tempname '.eps'];
+temp_file_path=append(tempname(),'.eps') ;
 % print(fig_h,'-depsc2','-loose','-adobecset',temp_file_path);
 old_vals=set_figure_to_wysiwyg_printing(fig_h);
 print(fig_h,'-depsc2','-loose',temp_file_path);
 unset_figure_from_wysiwyg_printing(fig_h,old_vals);
-if ispc
+if ispc() ,
   if strcmp(computer('arch'),'win64')
     command_name='gswin64c';
   else
@@ -35,8 +35,8 @@ if ispc
 else
   command_name='gs';
 end
-eval_me=...
-  sprintf(['! %s -dBATCH -dNOPAUSE -dEPSCrop -sDEVICE=png16m ' ...
+raw_command=...
+  sprintf(['%s -dBATCH -dNOPAUSE -dEPSCrop -sDEVICE=png16m ' ...
            '-dTextAlphaBits=4 -dGraphicsAlphaBits=4 ' ...
            '-r%d ' ...
            '-dAutoRotatePages=/None -sOutputFile="%s.png" "%s"'],...
@@ -44,8 +44,11 @@ eval_me=...
           res,...
           basename,...
           temp_file_path);
-%eval_me=sprintf('! acrodist /n /q "%s\\%s.eps"',pwd,basename);
-eval(eval_me);
+if isunix() ,
+  command = append('LD_LIBRARY_PATH= ', raw_command) ;
+end
+%fprintf('%s\n', command) ;
+system(command) ;
 delete(temp_file_path);
 t=toc;
 fprintf(1,'Elapsed time: %0.1f sec\n',t);
