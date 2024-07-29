@@ -18,7 +18,7 @@ if nargin<2 || isempty(basename)
   end
 end
 fprintf(1,'Writing PDF file %s.pdf:\n',basename);
-temp_file_path=[tempname '.eps'];
+temp_file_path=[tempname() '.eps'];
 %print(fig_h,'-depsc2','-loose','-adobecset',temp_file_path);
 old_vals=set_figure_to_wysiwyg_printing(fig_h);
 print(fig_h,'-depsc2','-loose',temp_file_path);
@@ -40,7 +40,7 @@ command=...
           temp_file_path);
 %eval_me=sprintf('! acrodist /n /q "%s\\%s.eps"',pwd,basename);
 if isunix() ,
-  command = append('LD_LIBRARY_PATH= ', command) ;
+  command = horzcat('LD_LIBRARY_PATH= ', command) ;
 end
 %fprintf('%s\n', command) ;
 system(command);

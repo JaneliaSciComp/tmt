@@ -21,7 +21,7 @@ if nargin<3 || isempty(res)
   res=200;
 end
 fprintf(1,'Writing PNG file %s.png:\n',basename);
-temp_file_path=append(tempname(),'.eps') ;
+temp_file_path=horzcat(tempname(),'.eps') ;
 % print(fig_h,'-depsc2','-loose','-adobecset',temp_file_path);
 old_vals=set_figure_to_wysiwyg_printing(fig_h);
 print(fig_h,'-depsc2','-loose',temp_file_path);
@@ -45,7 +45,7 @@ raw_command=...
           basename,...
           temp_file_path);
 if isunix() ,
-  command = append('LD_LIBRARY_PATH= ', raw_command) ;
+  command = horzcat('LD_LIBRARY_PATH= ', raw_command) ;
 end
 %fprintf('%s\n', command) ;
 system(command) ;
