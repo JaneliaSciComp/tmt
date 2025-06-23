@@ -12,19 +12,12 @@ into the [TMT project](https://github.com/JaneliaSciComp/tmt), and
 going forward will be released as part of TMT.
 
 
-Copyright
----------
-
-Except where noted, all code, documentation, images, and anything else
-in Groundswell is copyright 2009-2025 by Adam L. Taylor.
-
-
 Contributions
 -------------
 
-Groundswell includes code from the TIFFStack project 
-(https://github.com/DylanMuir/TIFFStack).  This code carries a different 
-copyright and license (see the project README for details).
+Groundswell includes code from the TIFFStack project
+(https://github.com/DylanMuir/TIFFStack).  This code carries a
+different copyright and license (see the project README for details).
 
 
 Authors

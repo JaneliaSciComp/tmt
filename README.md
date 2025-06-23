@@ -4,11 +4,18 @@ TMT
 TMT is a library of Matlab functions, centered around the analysis 
 of electrophysiology data.
 
+TMT now includes an (updated) version of the Groundswell project.
+Groundswell is a Matlab application for browsing and analysis of
+electrophysiology data, optionally in concert with video data.  It was
+developed by Adam L. Taylor, under the direction of Stefan R. Pulver,
+while Dr. Pulver was a fellow at HHMI Janelia.  See
+`groundswell/README.md` for more information about Groundswell.
+
 
 System Requirements
 -------------------
 
-Matlab R2013b or later (64-bit)
+Matlab R2020a or later (64-bit)
 
 
 Installation
@@ -25,13 +32,21 @@ Installation
     you unzipped the .zip file.
 
 
+Contributions
+-------------
+
+Groundswell includes code from the TIFFStack project
+(https://github.com/DylanMuir/TIFFStack).  This code carries a
+different copyright and license (see the project README for details).
+
+
 Copyright
 ---------
 
 All files included in TMT present in version 1.09 are copyright Adam
 L. Taylor, 1997-2011.  All files after this point, and additions to
 existing files, are copyright Howard Hughes Medical Institute,
-2011-infinity.
+2011-infinity.  (But see Contributions section above.)
 
 
 License
