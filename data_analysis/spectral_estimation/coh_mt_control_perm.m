@@ -8,11 +8,11 @@ N=size(x,1);  % number of time points
 R=size(x,2);  % number of samples of the signals
 
 % figure out number of perms to do
-N_passes=ceil(100/alpha_thresh)
+N_passes = ceil(100/alpha_thresh)  %#ok<NOPRT>
 
 % do the perms
 for j=1:N_passes
-  fprintf(1,'.');  if mod(j,50)==0 fprintf(1,'\n'); end
+  fprintf(1,'.');  if mod(j,50)==0 fprintf(1,'\n'); end  %#ok<SEPEX>
   x_shuffled=zeros(size(x));
   for k=1:R
     perm=randperm(N);
@@ -21,14 +21,14 @@ for j=1:N_passes
 %   figure;
 %   plot(x_shuffled(:,1));
   [f,C_mag_sample_this]=...
-    coh_mt(dt,x_shuffled,y,NW,K,f_max,p_FFT_extra);
+    coh_mt(dt,x_shuffled,y,NW,K,f_max,p_FFT_extra); %#ok<ASGLU>
   if j==1
     n_f=length(C_mag_sample_this);
     C_mag_sample=nan(n_f,N_passes);
   end
   C_mag_sample(:,j)=C_mag_sample_this;
 end
-if mod(j,50)~=0 fprintf(1,'\n'); end
+if mod(j,50)~=0 fprintf(1,'\n'); end %#ok<SEPEX>
 
 % compute the significance threshold
 C_mag_sample_sorted=sort(C_mag_sample,2);

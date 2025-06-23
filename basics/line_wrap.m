@@ -19,7 +19,7 @@ end
 [x_seg,y_seg]=break_at_wrap_points(x,y,y_lim);
 n_seg=length(x_seg);
 line_hs=zeros(n_seg,1);
-for i=1:n_seg
+for i = 1:n_seg
   line_hs(i)=line(x_seg{i},...
                   y_seg{i},...
                   varargin{:});

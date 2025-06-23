@@ -1,4 +1,4 @@
-function patch_h = patch_eb_wrap(x,y,y_eb,y_lim,c,varargin)
+function patch_h = patch_eb_wrap(x,y,y_eb,y_lim,clr,varargin)
 
 % plots an angular error bar as a number of patch objects.  Usually used
 % in conjunction with line_wrap()
@@ -17,10 +17,10 @@ n_seg=length(x_seg);
 patch_h=zeros(0,1);
 for i=1:n_seg
   patch_h_1=...
-    patch_eb(x_seg{i},y_eb_wrapped_seg{i}       ,c,varargin{:});
+    patch_eb(x_seg{i},y_eb_wrapped_seg{i}       ,clr,varargin{:});
   patch_h_2=...
-    patch_eb(x_seg{i},y_eb_wrapped_seg{i}-y_span,c,varargin{:});
+    patch_eb(x_seg{i},y_eb_wrapped_seg{i}-y_span,clr,varargin{:});
   patch_h_3=...
-    patch_eb(x_seg{i},y_eb_wrapped_seg{i}+y_span,c,varargin{:});
+    patch_eb(x_seg{i},y_eb_wrapped_seg{i}+y_span,clr,varargin{:});
   patch_h=[patch_h;patch_h_1;patch_h_2;patch_h_3];
 end

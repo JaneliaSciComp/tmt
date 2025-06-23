@@ -7,6 +7,8 @@ function modpath()
     addpath(fullfile(this_folder_path,'lapwing'));
     addpath(fullfile(this_folder_path,'fuster'));
     addpath(fullfile(this_folder_path,'dagger'));
+    path_to_gs_modpath = fullfile(this_folder_path, 'groundswell', 'modpath.m') ;
+    run(path_to_gs_modpath) ;    
     addpath(this_folder_path) ;
 end
 

@@ -31,7 +31,7 @@ if nargin<9
 end
 
 % make the figure
-h_fig=figure;
+h_fig=figure();
 
 % make the plots
 h_mag_axes=subplot(2,1,1);

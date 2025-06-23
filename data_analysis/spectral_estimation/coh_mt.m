@@ -43,7 +43,7 @@ function [f,...
 %
 % this version assumes x and y are of shape [N R], N the number of
 % time points, R the number of samples.  If you want to calc
-% coherence for more than one pair of signals, call if multiple times
+% coherence for more than one pair of signals, call it multiple times.
 
 % get the timing info, calc various scalars of interest
 N=size(x,1);  % number of time points per process sample

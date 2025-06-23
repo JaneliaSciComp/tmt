@@ -1,7 +1,19 @@
-function ylim_all(yl)
+function ylim_all(varargin)
 
-axes_h=get(gcf,'children');
+if isempty(varargin)
+  error('Need at least one argument') ;
+end
+arg1 = varargin{1} ;
+if ishghandle(arg1) && isprop(arg1, 'Type') && strcmp(arg1.Type, 'figure')
+  fig = arg1 ;
+  yl = varargin{2} ;
+else
+  fig = gcf() ;
+  yl = varargin{1} ;
+end
+
+axes_h=get(fig,'children');
 for i=1:length(axes_h)
-  axes(axes_h(i));
-  ylim(yl);
+  ax = axes_h(i) ;
+  ylim(ax,yl);
 end

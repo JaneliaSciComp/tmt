@@ -24,24 +24,11 @@ end
 C=C_mag.*exp(1i*C_phase);  
 
 % do the cohereogram itself
-%figure;
-%axes;
 im=coh2l75_border(C,C_mag_thresh);
 image(t,f,im);
 axis xy;
-ylim([f_lim]);
-xlim([t_lim]);
+ylim(f_lim);
+xlim(t_lim);
 ylabel('Frequency (Hz)');
 xlabel('Time (s)');
 title(title_str,'interpreter','none');
-
-% % draw the colorbar
-% cmap_phase=l75_border(256);  % to show abs(C)==1 colors
-% colorbar_axes_h=colorbar;
-% colorbar_image_h=findobj(colorbar_axes_h,'Tag','TMW_COLORBAR');
-% set(colorbar_image_h,'YData',[-180 +180]);
-% set(colorbar_axes_h,'YLim',[-180 +180]);
-% set(colorbar_image_h,'CData',reshape(cmap_phase,[256 1 3]));
-% set(colorbar_axes_h,'YTick',[-180 -90 0 +90 +180]);
-% set(gcf,'CurrentAxes',colorbar_axes_h);
-% ylabel('Phase (deg), for |C|=1');

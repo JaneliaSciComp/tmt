@@ -4,7 +4,7 @@ function print_png(fig_h,basename,res)
 
 tic
 if nargin<1 || isempty(fig_h)
-  fig_h=gcf;
+  fig_h=gcf();
 end
 if nargin<2 || isempty(basename)
   if isempty(get(fig_h,'name'))
