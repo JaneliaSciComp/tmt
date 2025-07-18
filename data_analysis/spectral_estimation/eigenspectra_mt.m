@@ -17,7 +17,7 @@ function [f,...
 %   reshape(Syx(ifr,:,:), [M M]) is Hermitian for all ifr.
 
 % get the timing info, calc various scalars of interest
-N=size(x,1);  % number of time points per process sample
+N=size(x,1);  %#ok<NASGU>  % number of time points per process sample
 M=size(x,2);  % number of signals
 R=size(x,3);  % number of samples of the process
 fs=1/dt;
@@ -37,33 +37,35 @@ if ~exist('conf_level', 'var')  || isempty(conf_level)
 end
 
 [f,...
- Syx, Syx_mag, Syx_phase, Cyx, ...
+ Syx, ~, ~, ...
  N_fft, f_res_diam, K, ...
- Syx_mag_ci, Syx_phase_ci, ...
- Syx_mag_xf, Syx_mag_xf_sigma, Syx_mag_xf_ci,...
- Syx_phase_sigma, ...
+ ~, ~, ...
+ ~, ~, ~,...
+ ~, ...
  Syxs_tao]=...
   cross_pow_mt(dt,x,...
                NW,K,W_keep,...
                p_FFT_extra,conf_level) ;
 
-Nf = size(Syx,1) ;  % Number of frequencies
-assert(isequal(size(Syx),[Nf M M])) ;
+N_f = size(Syx,1) ;  % Number of frequencies
+assert(isequal(size(Syx),[N_f M M])) ;
 
 % Get the eigenspectra for the main estimate
 [V, lambda] = V_and_lambda_from_Syx(Syx) ;
+  % V is of shape [N_f M M]
+  % lambda is of shape [N_f M]
 
 % If conf_level is zero, don't compute CIs
 if conf_level == 0
-  V_mag_ci = 0 ;
-  V_phase_ci = 0 ;
-  lambda_ci = 0 ;
+  V_mag_ci = [] ;
+  V_phase_ci = [] ;
+  lambda_ci = [] ;
   return
 end
 
 % Compute the take-away-one eigenspectra
-Vs_tao = zeros([Nf M M R K]) ;
-lambdas_tao = zeros([Nf M R K]) ;
+Vs_tao = zeros([N_f M M R K]) ;
+lambdas_tao = zeros([N_f M R K]) ;
 for taper_index = 1 : K
   for sample_index = 1 : R
     [Vs_tao(:,:,:,sample_index,taper_index), lambdas_tao(:,:,sample_index,taper_index)] = ...
@@ -86,11 +88,12 @@ V_mag_xf_sigma=...
                 repmat(Vs_tao_mag_xf_mean,[1 1 1 R K])).^2,5),4));  % [N_f M M]
 
 % calculate the eigenspectra magnitude confidence intervals
-V_mag = abs(V) ;
-V_mag_xf = V_mag ;  % identity function
+V_mag = abs(V) ;  % [N_f M M]
+V_mag_xf = V_mag ;  % [N_f M M]  % identity function
 ci_factor=tinv((1+conf_level)/2,R*K-1);  % scalar
-V_mag_xf_ci(:,:,:,1)=V_mag_xf-ci_factor*V_mag_xf_sigma;  % [N_f M M]
-V_mag_xf_ci(:,:,:,2)=V_mag_xf+ci_factor*V_mag_xf_sigma;  % [N_f M M]
+V_mag_xf_ci = zeros([N_f M M 2]) ;  % [N_f M M 2]
+V_mag_xf_ci(:,:,:,1)=V_mag_xf-ci_factor*V_mag_xf_sigma;
+V_mag_xf_ci(:,:,:,2)=V_mag_xf+ci_factor*V_mag_xf_sigma;
 V_mag_ci=V_mag_xf_ci;  % b/c transform is identity function; [N_f M M 2]
 
 % calculate the eigenspectra phase sigma
@@ -101,24 +104,26 @@ V_phase_sigma=sqrt(arg_sqrt);  % [N_f M M]
 
 % calculate the eigenspectra phase confidence intervals
 V_phase = angle(V) ;  % [N_f M M]
-V_phase_ci(:,:,:,1)=V_phase-ci_factor*V_phase_sigma;  % [N_f M M]
-V_phase_ci(:,:,:,2)=V_phase+ci_factor*V_phase_sigma;  % [N_f M M]
+V_phase_ci = zeros([N_f M M 2]) ;  % [N_f M M 2]
+V_phase_ci(:,:,:,1)=V_phase-ci_factor*V_phase_sigma;
+V_phase_ci(:,:,:,2)=V_phase+ci_factor*V_phase_sigma;
 % V_phase_ci is of size [N_f M M 2]
 
 % transform the take-away-one eigenvalues
 lambdas_tao_xf=log10(lambdas_tao);  % [N_f M R K]
 
 % calculate the sigmas on the transformed eigenvalues
-lambdas_tao_xf_mean=mean(mean(lambdas_tao_xf,5),4);  % [N_f M]
+lambdas_tao_xf_mean=mean(mean(lambdas_tao_xf,4),3);  % [N_f M]
 lambda_xf_sigma=...
   sqrt((R*K-1)/(R*K)*...
        sum(sum((lambdas_tao_xf-...
-                repmat(lambdas_tao_xf_mean,[1 1 R K])).^2,5),4));  % [N_f M]
+                repmat(lambdas_tao_xf_mean,[1 1 R K])).^2,4),3));  % [N_f M]
 
 % calculate the eigenvalue confidence intervals
-lambda_xf = log10(lambda) ;
-lambda_xf_ci(:,:,1)=lambda_xf-ci_factor*lambda_xf_sigma;  % [N_f M]
-lambda_xf_ci(:,:,2)=lambda_xf+ci_factor*lambda_xf_sigma;  % [N_f M]
+lambda_xf = log10(lambda) ;  % [N_f M]
+lambda_xf_ci = zeros([N_f M 2]) ;  % [N_f M 2]
+lambda_xf_ci(:,:,1)=lambda_xf-ci_factor*lambda_xf_sigma; 
+lambda_xf_ci(:,:,2)=lambda_xf+ci_factor*lambda_xf_sigma;
 lambda_ci=10.^lambda_xf_ci;  % [N_f M 2]
 
 end % function

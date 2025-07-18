@@ -1,5 +1,5 @@
 function [f,...
-          Syx, Syx_mag, Syx_phase, Cyx, ...
+          Syx, Syx_mag, Syx_phase, ...
           N_fft, f_res_diam, K, ...
           Syx_mag_ci, Syx_phase_ci, ...
           Syx_mag_xf, Syx_mag_xf_sigma, Syx_mag_xf_ci,...
@@ -67,17 +67,19 @@ N_f=length(f);
 % taper and do the FFTs
 if N_f*M*R*K<1e5
   % if dimensions are not too big, do this the easy way
-  x_tapered=repmat(tapers,[1 M R 1]).*repmat(x,[1 1 1 K]);  % N x M x R x K
-  X=fft(x_tapered,N_fft);  % N_fft x M x R x K
-  X=X(1:N_f,:,:,:);  % N_f x M x R x K
+  x_tapered = tapers .* x ;  % N x M x R x K
+  X = fft(x_tapered,N_fft,1) ;  % N_fft x M x R x K
+  X = X(1:N_f,:,:,:) ;  % N_f x M x R x K
 else
   % if dimensions are big, do this in a more space-efficient way
   X=zeros([N_f M R K]);
   for r=1:R  % windows
+    x_this = x(:,:,r) ;  % N x M
     for k=1:K  % tapers
-      x_this_tapered=tapers(:,:,:,k).*x(:,:,r);  % N x M x 1 
-      X_this=fft(x_this_tapered,N_fft);  % N_fft x M x 1
-      X(:,:,r,k)=X_this(1:N_f,:);  % N_f x M x 1
+      taper = tapers(:,:,:,k) ; % N x 1
+      x_this_tapered = taper .* x_this ;  % N x M
+      X_this = fft(x_this_tapered,N_fft,1) ;  % N_fft x M
+      X(:,:,r,k) = X_this(1:N_f,:) ;  % N_f x M
     end
   end
 end
@@ -88,8 +90,8 @@ Syxs = zeros([N_f M M R K]) ;
 for k=1:K  % tapers
   for r=1:R  % windows
     for ifr = 1:N_f  % frequencies
-      X_this = transpose(X(ifr,:,r,k)) ;  % want col vector, but without conjugation
-      Syxs_this = X_this*X_this' ;  % S(i,j) is s.t. with positive angle means signal i *leads* signal j.
+      X_this = reshape(X(ifr,:,r,k), [M 1]) ;  % want col vector
+      Syxs_this = X_this*X_this' ;  % MxM, S(i,j) is s.t. with positive angle means signal i *leads* signal j.
       Syxs(ifr,:,:,r,k) = reshape(Syxs_this,[1 M M]) ;
     end 
   end
@@ -110,31 +112,6 @@ Syx=SyxRK/(R*K);  % [N_f M M]
 % separate out magnitude, phase
 Syx_mag=abs(Syx);  % [N_f M M]
 Syx_phase=unwrap(angle(Syx));  % [N_f M M]
-
-% Compute the coherence matrix
-Sxx = zeros([N_f M]) ;
-for i = 1 : M
-  for i_f = 1 : N_f
-    Sxx(i_f,i) = Syx(i_f, i, i) ;
-  end
-end
-Cyx = zeros([N_f M M]) ;
-for j = 1 : M
-  for i = 1 : M
-    for i_f = 1 : N_f
-      denom = sqrt(Sxx(i_f,i)*Sxx(i_f,j)) ;
-      Cyx(i_f,i,j) = Syx(i_f, i, j) / denom ;
-    end
-  end
-end
-
-% % separate out magnitude, phase
-% Cyx_mag=abs(Cyx);
-% % roundoff error can make Cyx_mag slightly greater than 1, so ceiling
-% % it, but leave nans alone
-% notnan=~isnan(Cyx_mag);
-% Cyx_mag(notnan)=min(Cyx_mag(notnan),1);
-% Cyx_phase=unwrap(angle(Cyx));
 
 % calc the sigmas
 if conf_level>0

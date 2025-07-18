@@ -1,8 +1,9 @@
-function [h,h_a,h_cb]=figure_powgram(t,f,S,...
-                                     t_lim,f_lim,S_lim,...
-                                     plot_what,z_lim,...
-                                     title_str,...
-                                     units_str)
+function [fig,ax,cb] = ...
+  figure_powgram(t,f,S,...
+                 t_lim,f_lim,S_lim,...
+                 plot_what,z_lim,...
+                 title_str,...
+                 units_str)
 
 % plots the spectrogram in S, which should be in units of (native
 % units)^2/Hz.  plot_what is a string that should be one of: 'power',
@@ -47,25 +48,26 @@ end
 
 % figure out the colorbar label
 if strcmpi(plot_what,'amplitude')
-  colorbar_label=sprintf('Amplitude density (%s/Hz^{0.5})',units_str);
+  colorbar_label_string=sprintf('Amplitude density (%s/Hz^{0.5})',units_str);
 elseif strcmpi(plot_what,'log-power')
-  colorbar_label=sprintf('Log power density (%s^2/Hz)',units_str);
+  colorbar_label_string=sprintf('Log power density (%s^2/Hz)',units_str);
 elseif strcmpi(plot_what,'log-amplitude')
-  colorbar_label=sprintf('Log amplitude density (%s/Hz^{0.5})',units_str);
+  colorbar_label_string=sprintf('Log amplitude density (%s/Hz^{0.5})',units_str);
 elseif strcmpi(plot_what,'db')
-  colorbar_label=sprintf('Power density (%s^2/Hz, dB)',units_str);
+  colorbar_label_string=sprintf('Power density (%s^2/Hz, dB)',units_str);
 else
   % default to just plotting power
-  colorbar_label=sprintf('Power density (%s^2/Hz)',units_str);
+  colorbar_label_string=sprintf('Power density (%s^2/Hz)',units_str);
 end  
 
 % make the figure
-h=figure;
-h_a=axes;
-plot_powgram(t,f,S,...
+fig=figure();
+ax=axes();
+plot_powgram(ax, ...
+             t,f,S,...
              t_lim,f_lim,S_lim,...
              plot_what,z_lim,...
              title_str)
-h_cb=colorbar;
-set(gcf,'CurrentAxes',h_cb);
-ylabel(colorbar_label);
+cb=colorbar(ax);
+% set(fig,'CurrentAxes',cb);
+ylabel(cb, colorbar_label_string) ;

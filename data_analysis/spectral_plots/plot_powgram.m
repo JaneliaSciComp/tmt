@@ -1,4 +1,5 @@
-function plot_powgram(t,f,S,...
+function plot_powgram(ax, ...
+                      t,f,S,...
                       t_lim,f_lim,S_lim,...
                       plot_what,z_lim,...
                       title_str)
@@ -13,26 +14,29 @@ function plot_powgram(t,f,S,...
 % limits in the same units as S, which are then transformed according
 % to plot_what.
 
-% the plot is placed in the current axes
+% the plot is placed in axes ax, or the current axes is ax is empty
 
 % deal with arguments
-if nargin<4 || isempty(t_lim)
+if isempty(ax)
+  ax = gca() ;
+end
+if nargin<5 || isempty(t_lim)
   dt=(t(end)-t(1))/(length(t)-1);
   t_lim=[t(1)-dt/2 t(end)+dt/2];
 end
-if nargin<5 || isempty(f_lim)
+if nargin<6 || isempty(f_lim)
   f_lim=[f(1) f(end)];
 end
-if nargin<6
+if nargin<7
   S_lim=[];
 end
-if nargin<7 || isempty(plot_what)
+if nargin<8 || isempty(plot_what)
   plot_what='power';
 end
-if nargin<8 
+if nargin<9 
   z_lim=[];
 end
-if nargin<9
+if nargin<10
   title_str='';
 end
 
@@ -86,15 +90,15 @@ else
 end  
 
 % make the plot
-imagesc(t,f,z,z_lim);
-axis xy;
+imagesc(ax, t, f, z, z_lim) ;
+axis(ax, 'xy') ;
 %colormap(gray(256));
-colormap(blue_to_yellow(256));
-ylabel('Frequency (Hz)');
-xlim(t_lim);
-ylim(f_lim);
+colormap(ax, blue_to_yellow(256));
+ylabel(ax, 'Frequency (Hz)');
+xlim(ax, t_lim);
+ylim(ax, f_lim);
 %h_cb=colorbar;
-title(title_str,'interpreter','none');
-xlabel('Time (s)');
+title(ax, title_str,'interpreter','none');
+xlabel(ax, 'Time (s)');
 %set(gcf,'CurrentAxes',h_cb);
 %ylabel(sprintf('SD density (%s/Hz^{0.5})',units_str));
